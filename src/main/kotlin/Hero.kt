@@ -26,12 +26,15 @@ class Attacker(
                 val critDamage = ((specialSecond.damage * 1.5)).toInt()
                 println("CRITICAL HIT!(-$critDamage)")
                 boss.health -= critDamage
-                specialSecond.cooldown --
+                specialSecond.cooldown = 3
             } else {
                 boss.health -= specialSecond.damage
                 println("(-${specialSecond.damage})")
-                specialSecond.cooldown --
+                specialSecond.cooldown = 3
             }
+        }else {
+            println("This ability can't be used right now. (Cooldown: ${specialSecond.cooldown})")
+
         }
     }
 
@@ -147,7 +150,7 @@ class Healer(
             healingAbility.cooldown = 0
             hero.health += healingAbility.damage
             healingAbility.cooldown = 2
-            println("$name heals $hero (+${healingAbility.damage})")
+            println("$name heals ${hero.name} (+${healingAbility.damage})")
         } else {
             println("This Ability can't be used right now (Cooldown: ${healingAbility.cooldown})")
         }

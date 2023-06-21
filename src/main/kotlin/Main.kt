@@ -1,5 +1,4 @@
-fun main ()
-{
+fun main () {
     val heroes = listOf(
         Attacker("Son Goku",
             500, 500,
