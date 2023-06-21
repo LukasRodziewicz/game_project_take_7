@@ -130,7 +130,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             println("""
                 ----------------------------BOSS ATTACK------------------------------------
                                  ${boss.name} uses ${boss.basic.name}!
-                --------------------------------------------------------------------------- 
+                ---------------------------------------------------------------------------
             """.trimIndent())
             //überprüfen ob tank im spiel ist falls ja
             val hitChar = squad.random()                                //Random char
@@ -199,37 +199,99 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
 
         when (selectedAction) {
             1 -> {
-                println("${hero.name} uses ${hero.basic.name}")
                 useBasic(hero)
+                println("${hero.name} uses ${hero.basic.name}")
             }
 
             2 -> {
-                println("${hero.name} uses ${hero.special.name}")
-                useSpecial(hero)
+                if (hero.special.cooldown == 0) {
+                    hero.special.cooldown = 0
+                    useSpecial(hero)
+                    println("${hero.name} uses ${hero.special.name}")
+                }else{
+                    println("This ability can't be used right now (Cooldown: ${hero.special.cooldown})")
+                    playerTurn(hero)
+                }
             }
             3 -> if (hero is Attacker) {
-                hero.specialAttack(boss)
+                if (hero.specialSecond.cooldown == 0) {
+                    hero.specialSecond.cooldown = 0
+                    hero.specialAttack(boss)
+                    println("${hero.name} uses ${hero.specialSecond.name}")
+                }else{
+                    println("This ability can't be used right now (Cooldown: ${hero.specialSecond.cooldown})")
+                    playerTurn(hero)
+                }
             } else if (hero is Support) {
-                hero.buffSquad(heroes)
+                if (hero.supportAbility.cooldown == 0) {
+                    hero.supportAbility.cooldown = 0
+                    hero.buffSquad(heroes)
+                    println("${hero.name} uses ${hero.supportAbility.name}")
+                }else{
+                    println("This ability can't be used right now (Cooldown: ${hero.supportAbility.cooldown})")
+                    playerTurn(hero)
+                }
             } else if (hero is Tank) {
-                hero. tankAbility
+                if (hero.tankAbility.cooldown == 0) {
+                    hero.tankAbility.cooldown = 0
+                    hero.tankAbility
+                    println("${hero.name} uses ${hero.tankAbility.name}")
+                }else{
+                    println("This ability can't be used right now (Cooldown: ${hero.tankAbility.cooldown})")
+                    playerTurn(hero)
+                }
             } else if (hero is Healer) {
-                hero.healHero(hero)
+                if (hero.healingAbility.cooldown == 0) {
+                    hero.healingAbility.cooldown = 0
+                    hero.healHero(hero)
+                    println("${hero.name} uses ${hero.healingAbility.name}")
+                }else{
+                    println("This ability can't be used right now (Cooldown: ${hero.healingAbility.cooldown})")
+                    playerTurn(hero)
+                }
             }
 
 
             4 -> if (hero is Attacker) {
-                hero.ultimateAttack(boss)
+                if (hero.ultimate.cooldown == 0) {
+                    hero.ultimate.cooldown = 0
+                    hero.ultimateAttack(boss)
+                    println("${hero.name} uses ${hero.ultimate.name}")
+                }else{
+                    println("This ability can't be used right now (Cooldown: ${hero.ultimate.cooldown})")
+                    playerTurn(hero)
+                }
             } else if (hero is Support) {
-                hero.debuffBoss(boss)
+                if (hero.ultimate.cooldown== 0) {
+                    hero.ultimate.cooldown = 0
+                    hero.debuffBoss(boss)
+                    println("${hero.name} uses ${hero.ultimate.name}")
+                }else{
+                        println("This ability can't be used right now (Cooldown: ${hero.ultimate.cooldown})")
+                        playerTurn(hero)
+                    }
             } else if (hero is Tank) {
-                hero.shield(heroes)
+                if (hero.ultimate.cooldown == 0) {
+                    hero.ultimate.cooldown = 0
+                    hero.shield(heroes)
+                    println("${hero.name} uses ${hero.ultimate.name}")
+                }else{
+                    println("This ability can't be used right now (Cooldown: ${hero.ultimate.cooldown})")
+                    playerTurn(hero)
+                }
             } else if (hero is Healer) {
-                hero.healAll(heroes)
+                if (hero.ultimateHeal.cooldown == 0){
+                    hero.ultimateHeal.cooldown = 0
+                    hero.healAll(heroes)
+                    println("${hero.name} uses ${hero.ultimateHeal.name}")
+                }else{
+                    println("This ability can't be used right now (Cooldown: ${hero.ultimateHeal.cooldown})")
+                    playerTurn(hero)
+                }
 
             }
             else -> {
-                println("Ungültige Eingabe. Bitte wähle eine der angegebenen Aktionen.")
+                println("Error")
                 playerTurn(hero)
                 return
             }
@@ -248,15 +310,21 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         }
 
     }
-    private fun useSpecial(hero:Hero){
-        val randomNumber = Math.random()
-        if (randomNumber < 0.5){
-            val critDamage = ((hero.special.damage * 1.5)+1).toInt()
-            println("CRITICAL HIT!(-$critDamage)")
-            boss.health -= critDamage
-        }else {
-            boss.health -= hero.special.damage
-            println("(-${hero.special.damage})")
+    private fun useSpecial(hero:Hero) {
+        if (hero.special.cooldown == 0) {
+            val randomNumber = Math.random()
+            if (randomNumber < 0.5) {
+                val critDamage = ((hero.special.damage * 1.5) + 1).toInt()
+                println("CRITICAL HIT!(-$critDamage)")
+                boss.health -= critDamage
+            } else {
+                boss.health -= hero.special.damage
+                println("(-${hero.special.damage})")
+            }
+            hero.special.cooldown = 3
+        }else{
+            println("This ability can't be used right now (Cooldown: ${hero.special.cooldown})")
+            playerTurn(hero)
         }
 
     }
