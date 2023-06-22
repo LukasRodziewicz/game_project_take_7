@@ -15,6 +15,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
 
 
     }
+
     private fun introduction(){
         println("""
             ***************************************************************************************
@@ -238,6 +239,13 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 --------------------------------------------------------------------------- 
             """.trimIndent()
             )
+            if (boss.health < boss.maxHealth){
+                boss.health += 40
+                if (boss.health > boss.maxHealth){
+                    boss.health = boss.maxHealth
+                }
+                println("${boss.name} heals himself (+40)")
+            }
             squad.forEach { hero -> hero.health -= boss.special.damage } // AOE DMG
             println("All heroes have taken damage: (-${boss.special.damage})")
             println(
@@ -260,13 +268,6 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 ---------------------------------------------------------------------------
             """.trimIndent()
             )
-            if (boss.health < boss.maxHealth){
-                boss.health += 40
-                if (boss.health > boss.maxHealth){
-                    boss.health = boss.maxHealth
-                }
-                println("${boss.name} heals himself (+40)")
-            }
             println("(-${boss.basic.damage * totalDamageModifier})")
             if (totalDamageModifier < 1.0){
                 println("Damage Output has been decreased by a debuff")

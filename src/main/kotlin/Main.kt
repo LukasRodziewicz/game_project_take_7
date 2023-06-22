@@ -31,8 +31,8 @@ fun main () {
         Tank("Tien Shinhan",
             300,300,
             Ability("Kiai", 10, 0),
-            Ability("Chasing Bullet", 40, 0),
-            tankAbility = Ability("Trash Talk", 50, 0),
+            Ability("Third Eye", 40, 0),
+            tankAbility = Ability("Chasing Bullet", 50, 0),
             ultimate = Ability("Kaio Kiku Canon", 90, 5)
         )
     )
