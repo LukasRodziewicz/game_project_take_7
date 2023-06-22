@@ -6,6 +6,9 @@ open class Hero(
     val special: Ability,
 
 )
+{
+    var effects = mutableListOf<Effect>()
+}
     //TODO ----------------------------ATTACKER----------------------------
 class Attacker(
     name: String,
@@ -123,8 +126,9 @@ class Support(
     fun debuffBoss(boss: Boss){
         if ( ultimate.cooldown == 0){
             ultimate.cooldown = 0
-            boss.basic.damage -= (boss.basic.damage * 0.7).toInt()
-            boss.special.damage -= (boss.special.damage * 0.7).toInt()
+            //boss.basic.damage -= (boss.basic.damage * 0.7).toInt()
+            boss.effects.add(Effect(2, damageModifier = 0.7))
+            //boss.special.damage -= (boss.special.damage * 0.7).toInt()
             ultimate.cooldown = 4
             println("$name decreased Boss damage by 70%")
         }else{

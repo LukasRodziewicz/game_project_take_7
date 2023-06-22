@@ -8,3 +8,6 @@ open class Boss(
     val ultimate: Ability,
 
     )
+{
+    var effects = mutableListOf<Effect>()
+}

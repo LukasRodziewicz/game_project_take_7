@@ -5,7 +5,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         1000,
         1000,
         Ability("Psy-Kick", 40, 0),
-        Ability("Smite", 50, 0),
+        Ability("Destruction Disc", 50, 0),
         Ability("Summon", 0, 0),
         Ability("Telekinesis", 90, 3)
     )
@@ -13,71 +13,86 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
     open fun startGame() {
         squad = selectHeroes(heroes)
         playGame()
+
+
     }
-    //TODO ----------------------------CHOOSE HEROES----------------------------
+
+    //TODO ----------------------------SELECT HEROES----------------------------
     private fun selectHeroes(heroes: List<Hero>): List<Hero> {
         val squad = mutableListOf<Hero>()
         val newList = heroes.toMutableList()
 
         do {
-            println("""
+            println(
+                """
                 ------------------------------------------------------------
                     Please select your heroes (Type in the number):
                 ************************************************************
-            """.trimIndent())
+            """.trimIndent()
+            )
             newList.forEachIndexed { index, hero -> println("${index + 1}. ${hero.name}") }
-            println("""
+            println(
+                """
                 ************************************************************
                 ------------------------------------------------------------
-            """.trimIndent())
+            """.trimIndent()
+            )
             val input = readLine()
             val choice = input?.toIntOrNull()?.minus(1)
 
             if (choice in newList.indices) {
                 val selectedHero = newList.removeAt(choice!!)
                 squad.add(selectedHero)
-                println("You chose ${selectedHero.name}")
-                if (squad.size < 3){
-                    println("Please choose another one.")
+                println("${selectedHero.name} joined your Team")
+                if (squad.size < 3) {
+                    println("Please select another one.")
                 }
             } else {
                 println("As stated above: You have to type in the number that belongs to a hero. Please try again...")
             }
         } while (squad.size < 3)
-        println("""
+        println(
+            """
             ------------------------------------------------------------
             You successfully have chosen a Squad to battle with!
                         Your chosen heroes are:
             ************************************************************
-        """.trimIndent())
+        """.trimIndent()
+        )
         squad.forEachIndexed { index, hero ->
             println(hero.name)
         }
-            println("""
+        println(
+            """
                 ************************************************************
                 ------------------------------------------------------------
-            """.trimIndent())
+            """.trimIndent()
+        )
 
         Thread.sleep(1500)
         return squad
     }
 
     private fun playGame() {
-        println("""
+        println(
+            """
             ------------------------------------------------------------
                                 Battle begins:
                       ${boss.name} is making the first turn.
             ------------------------------------------------------------
-        """.trimIndent())
+        """.trimIndent()
+        )
         Thread.sleep(1500)
         while (!isBattleOver()) {
             performTurn()
         }
-        println("""
+        println(
+            """
             ------------------------------------------------------------
                                 The Battle is over!
             ------------------------------------------------------------
-        """.trimIndent())
+        """.trimIndent()
+        )
         if (boss.health <= 0) {
             println("Congratulations! You defeated the Boss!")
         } else {
@@ -109,32 +124,53 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
 
     //TODO ----------------------------BOSS' TURN----------------------------
     private fun bossTurn() {
+        var totalDamageModifier = 1.0
+        boss.effects = boss.effects.filter { it.duration > 0 }.toMutableList()
+        boss.effects.forEach { effect ->
+            boss.health -= effect.damagePerRound
+            boss.health += effect.healingPerRound
+            totalDamageModifier *= effect.damageModifier // das kommt in die spezifische attacke
+            effect.duration--
+        }
 
         if (boss.special.cooldown <= 0) {
-            println("""
+            println(
+                """
                 ----------------------------BOSS SPECIAL ATTACK----------------------------
                                         ${boss.name} uses ${boss.special.name}!
                 --------------------------------------------------------------------------- 
-            """.trimIndent())
+            """.trimIndent()
+            )
             squad.forEach { hero -> hero.health -= boss.special.damage } // AOE DMG
             println("All heroes have taken damage: (-${boss.special.damage})")
-            println("""
+            println(
+                """
                 ******************Heroes Life-Points:******************     
-            """.trimIndent())
+            """.trimIndent()
+            )
             squad.forEach { hero -> println("${hero.name}: ${hero.health}") }
-            println("""
+            println(
+                """
                 *******************************************************
-            """.trimIndent())
+            """.trimIndent()
+            )
             boss.special.cooldown = 3
         } else {
-            println("""
+            println(
+                """
                 ----------------------------BOSS ATTACK------------------------------------
                                  ${boss.name} uses ${boss.basic.name}!
                 ---------------------------------------------------------------------------
-            """.trimIndent())
+            """.trimIndent()
+            )
+            println("(-${boss.basic.damage * totalDamageModifier})")
+            //if (totalDamageModifier < 1.0){
+            //    println("Damage Output has been decreased by a debuff")
+            //}
             //überprüfen ob tank im spiel ist falls ja
+
             val hitChar = squad.random()                                //Random char
-            hitChar.health -= boss.basic.damage
+            hitChar.health -= (boss.basic.damage * totalDamageModifier).toInt()
             println("This attack hits ${hitChar.name}.")
             boss.basic.cooldown--
             if (hitChar.health <= 0) {
@@ -170,11 +206,13 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             if (boss.health < 0) {             //Damit bei der Auflistung das Boss-Leben nicht im Minusbereich angezeigt wird.
                 boss.health = 0
             }
-            println("""
+            println(
+                """
                 ----------BOSS HP----------
                 ${boss.health}
                 ---------------------------
-            """.trimIndent())
+            """.trimIndent()
+            )
             Thread.sleep(500)
             println("----------HEROES HP----------")
             squad.forEach { hero -> println("${hero.name}: ${hero.health}") }
@@ -182,6 +220,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             Thread.sleep(500)
         }
     }
+
     //TODO ----------------------------PLAYER INTERACTION DURING TURN----------------------------
     private fun playerTurn(hero: Hero) {
         println("Bitte wähle eine Aktion für ${hero.name}:")
@@ -207,37 +246,44 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         when (selectedAction) {
             1 -> {
                 useBasic(hero)
-                println("""
+                println(
+                    """
                 **************************HERO ATTACK************************************
                                  ${hero.name} uses ${hero.basic.name}!
                 *************************************************************************
-            """.trimIndent())
+            """.trimIndent()
+                )
             }
 
             2 -> {
                 if (hero.special.cooldown == 0) {
                     hero.special.cooldown = 0
                     useSpecial(hero)
-                    println("""
+                    println(
+                        """
                 **************************HERO ATTACK************************************
                                  ${hero.name} uses ${hero.special.name}!
                 *************************************************************************
-            """.trimIndent())
-                }else{
+            """.trimIndent()
+                    )
+                } else {
                     println("This ability can't be used right now (Cooldown: ${hero.special.cooldown})")
                     playerTurn(hero)
                 }
             }
+
             3 -> if (hero is Attacker) {
                 if (hero.specialSecond.cooldown == 0) {
                     hero.specialSecond.cooldown = 0
                     hero.specialAttack(boss)
-                    println("""
+                    println(
+                        """
                 **************************HERO ATTACK************************************
                                  ${hero.name} uses ${hero.specialSecond.name}!
                 *************************************************************************
-            """.trimIndent())
-                }else{
+            """.trimIndent()
+                    )
+                } else {
                     println("This ability can't be used right now (Cooldown: ${hero.specialSecond.cooldown})")
                     playerTurn(hero)
                 }
@@ -245,12 +291,14 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 if (hero.supportAbility.cooldown == 0) {
                     hero.supportAbility.cooldown = 0
                     hero.buffSquad(heroes)
-                    println("""
+                    println(
+                        """
                 ******************************BUFF***************************************
                                  ${hero.name} uses ${hero.supportAbility.name}!
                 *************************************************************************
-            """.trimIndent())
-                }else{
+            """.trimIndent()
+                    )
+                } else {
                     println("This ability can't be used right now (Cooldown: ${hero.supportAbility.cooldown})")
                     playerTurn(hero)
                 }
@@ -258,12 +306,14 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 if (hero.tankAbility.cooldown == 0) {
                     hero.tankAbility.cooldown = 0
                     hero.tankAbility
-                    println("""
+                    println(
+                        """
                 ******************************TAUNT**************************************
                                  ${hero.name} uses ${hero.tankAbility.name}!
                 *************************************************************************
-            """.trimIndent())
-                }else{
+            """.trimIndent()
+                    )
+                } else {
                     println("This ability can't be used right now (Cooldown: ${hero.tankAbility.cooldown})")
                     playerTurn(hero)
                 }
@@ -271,12 +321,14 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 if (hero.healingAbility.cooldown == 0) {
                     hero.healingAbility.cooldown = 0
                     hero.healHero(hero)
-                    println("""
+                    println(
+                        """
                 *****************************HEALING*************************************
                                  ${hero.name} uses ${hero.healingAbility.name}!
                 *************************************************************************
-            """.trimIndent())
-                }else{
+            """.trimIndent()
+                    )
+                } else {
                     println("This ability can't be used right now (Cooldown: ${hero.healingAbility.cooldown})")
                     playerTurn(hero)
                 }
@@ -287,56 +339,65 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 if (hero.ultimate.cooldown == 0) {
                     hero.ultimate.cooldown = 0
                     hero.ultimateAttack(boss)
-                    println("""
+                    println(
+                        """
                 **************************HERO ATTACK************************************
                                  ${hero.name} uses ${hero.ultimate.name}!
                 *************************************************************************
-            """.trimIndent())
-                }else{
+            """.trimIndent()
+                    )
+                } else {
                     println("This ability can't be used right now (Cooldown: ${hero.ultimate.cooldown})")
                     playerTurn(hero)
                 }
             } else if (hero is Support) {
-                if (hero.ultimate.cooldown== 0) {
+                if (hero.ultimate.cooldown == 0) {
                     hero.ultimate.cooldown = 0
                     hero.debuffBoss(boss)
-                    println("""
+                    println(
+                        """
                 *****************************DEBUFF**************************************
                                  ${hero.name} uses ${hero.ultimate.name}!
                 *************************************************************************
-            """.trimIndent())
-                }else{
-                        println("This ability can't be used right now (Cooldown: ${hero.ultimate.cooldown})")
-                        playerTurn(hero)
-                    }
+            """.trimIndent()
+                    )
+                } else {
+                    println("This ability can't be used right now (Cooldown: ${hero.ultimate.cooldown})")
+                    playerTurn(hero)
+                }
             } else if (hero is Tank) {
                 if (hero.ultimate.cooldown == 0) {
                     hero.ultimate.cooldown = 0
                     hero.shield(heroes)
-                    println("""
+                    println(
+                        """
                 *****************************SHIELD**************************************
                                  ${hero.name} uses ${hero.ultimate.name}!
                 *************************************************************************
-            """.trimIndent())
-                }else{
+            """.trimIndent()
+                    )
+                } else {
                     println("This ability can't be used right now (Cooldown: ${hero.ultimate.cooldown})")
                     playerTurn(hero)
                 }
             } else if (hero is Healer) {
-                if (hero.ultimateHeal.cooldown == 0){
+                if (hero.ultimateHeal.cooldown == 0) {
                     hero.ultimateHeal.cooldown = 0
                     hero.healAll(heroes)
-                    println("""
+                    println(
+                        """
                 ****************************HEALING**************************************
                                  ${hero.name} uses ${hero.ultimateHeal.name}!
                 *************************************************************************
-            """.trimIndent())
-                }else{
+            """.trimIndent()
+                    )
+                } else {
                     println("This ability can't be used right now (Cooldown: ${hero.ultimateHeal.cooldown})")
                     playerTurn(hero)
                 }
 
             }
+
             else -> {
                 println("Error")
                 playerTurn(hero)
@@ -345,51 +406,104 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         }
     }
 
-    private fun useBasic(hero:Hero){
+    private fun useBasic(hero: Hero) {
+        var totalDamageModifier = 1.0
+        hero.effects.forEach { effect ->
+            totalDamageModifier *= effect.damageModifier
+
+        }
         val randomNumber = Math.random()
-        if (randomNumber < 0.5){
-            val critDamage = ((hero.basic.damage * 1.5)+1).toInt()
-            println("CRITICAL HIT!(-$critDamage)")
-            boss.health -= critDamage
-        }else {
-            boss.health -= hero.basic.damage
-            println("(-${hero.basic.damage})")
+        if (randomNumber < 0.5) {
+            val critDamage = ((hero.basic.damage * 1.5) + 1).toInt()
+            println("CRITICAL HIT!(-${(critDamage * totalDamageModifier).toInt()})")
+            boss.health -= (critDamage * totalDamageModifier).toInt()
+        } else {
+            boss.health -= (hero.basic.damage * totalDamageModifier).toInt() //das selbe
+            println("(-${(hero.basic.damage * totalDamageModifier).toInt()})")
         }
 
     }
-    private fun useSpecial(hero:Hero) {
-        if (hero.special.cooldown == 0) {
-            val randomNumber = Math.random()
-            if (randomNumber < 0.5) {
-                val critDamage = ((hero.special.damage * 1.5) + 1).toInt()
-                println("CRITICAL HIT!(-$critDamage)")
-                boss.health -= critDamage
+    private fun useSpecial(hero: Hero) {
+        var totalDamageModifier = 1.0
+        hero.effects.forEach { effect ->
+            totalDamageModifier *= effect.damageModifier
+            if (hero.special.cooldown == 0) {
+                val randomNumber = Math.random()
+                if (randomNumber < 0.5) {
+                    val critDamage = ((hero.special.damage * 1.5) + 1).toInt()
+                    println("CRITICAL HIT!(-${(critDamage * totalDamageModifier).toInt()})")
+                    boss.health -= critDamage
+                } else {
+                    boss.health -= (hero.special.damage * totalDamageModifier).toInt()
+                    println("(-${(hero.special.damage * totalDamageModifier)})")
+                }
+                hero.special.cooldown = 3
             } else {
-                boss.health -= hero.special.damage
-                println("(-${hero.special.damage})")
+                println("This ability can't be used right now (Cooldown: ${hero.special.cooldown})")
+                playerTurn(hero)
             }
-            hero.special.cooldown = 3
-        }else{
-            println("This ability can't be used right now (Cooldown: ${hero.special.cooldown})")
-            playerTurn(hero)
         }
-
     }
 
-    private fun reduceCooldowns(hero: Hero){
+    private fun reduceCooldowns(hero: Hero) {
         hero.special.reduceCooldown()
-        if (hero is Attacker){
+        if (hero is Attacker) {
             hero.specialSecond.reduceCooldown()
             hero.ultimate.reduceCooldown()
-        }else if (hero is Support){
+        } else if (hero is Support) {
             hero.supportAbility.reduceCooldown()
             hero.ultimate.reduceCooldown()
-        }else if (hero is Healer){
+        } else if (hero is Healer) {
             hero.healingAbility.reduceCooldown()
-            hero. ultimateHeal.reduceCooldown()
-        }else if (hero is Tank){
+            hero.ultimateHeal.reduceCooldown()
+        } else if (hero is Tank) {
             hero.tankAbility.reduceCooldown()
             hero.ultimate.reduceCooldown()
         }
     }
+
+    private fun stats(heroName: String) {
+        val hero = heroes.find { it.name.equals(heroName, ignoreCase = true) }
+        if (hero != null)
+            println(
+                """
+            ${hero.name}'s stats:
+            Health: ${hero.health}
+            Basic: ${hero.basic.name} Base Dmg: ${hero.basic.damage}
+            Special: ${hero.special.name} Special Dmg: ${hero.special.damage}
+        """.trimIndent()
+            )
+        if (hero is Attacker) {
+            println(
+                """
+                Special 1 : ${hero.specialSecond.name} Damage: ${hero.specialSecond.damage}
+                Ultimate : ${hero.ultimate.name} Damage: ${hero.ultimate.damage}
+            """.trimIndent()
+            )
+        } else if (hero is Support) {
+            println(
+                """
+                Special 1 : ${hero.supportAbility.name} Damage: ${hero.supportAbility.damage}
+                Ultimate : ${hero.ultimate.name} Damage: ${hero.ultimate.damage}
+            """.trimIndent()
+            )
+        } else if (hero is Tank) {
+            println(
+                """
+                Special 1 : ${hero.tankAbility.name} Damage: ${hero.tankAbility.damage}
+                Ultimate : ${hero.ultimate.name} Damage: ${hero.ultimate.damage}
+            """.trimIndent()
+            )
+        } else if (hero is Healer) {
+            println(
+                """
+                Special 1 : ${hero.healingAbility.name} Damage: ${hero.healingAbility.damage}
+                Ultimate : ${hero.ultimateHeal.name} Damage: ${hero.ultimateHeal.damage}
+            """.trimIndent()
+            )
+        } else {
+            println("Hero not found.")
+        }
+    }
+
 }
