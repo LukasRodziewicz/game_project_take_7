@@ -48,7 +48,7 @@ class Attacker(
                 println("(-${ultimate.damage})")
             }
         }
-    }
+}
 
 
     //TODO ----------------------------TANK----------------------------
@@ -162,6 +162,5 @@ class Healer(
             ultimateHeal.cooldown = 5
             println("$name uses ${ultimateHeal.name} and heals the whole team (+${ultimateHeal.damage})")
     }
-
 }
 

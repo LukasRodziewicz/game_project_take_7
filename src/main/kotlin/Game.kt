@@ -1,7 +1,7 @@
 open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der Klasse Hero erstellen
     var squad: List<Hero> = listOf()       // Variable squad erstellen - ist eine Liste
     val boss = Boss(
-        "Majin Buu",
+        "Majin Boo",
         600,
         600,
         Ability("Psy-Kick", 50, 0),
@@ -77,7 +77,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             Ultimate (starts on cooldown) : Kiku Canon - Deals 90 damage (Cooldown: 5)
             
             -----------------------------------------------------BOSS---------------------------------------------------
-            Majin Buu
+            Majin Boo
             HP: 600
             Basic : Chasing Bullet - Deals 50 damage to target enemy
             Special : Telekinesis - Heals himself 40 HP and deals 120 damage to all enemies (Cooldown 3)
@@ -186,7 +186,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
     private fun performTurn() {
         val whoStarts = headsOrTails()
         if (whoStarts == "Heads"){
-            println("Heads! Majin Buu has the first move!")
+            println("Heads! Majin Boo has the first move!")
 
         bossTurn()
         Thread.sleep(1000)
