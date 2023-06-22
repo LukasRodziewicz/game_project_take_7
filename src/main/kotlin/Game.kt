@@ -321,19 +321,26 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             if (boss.health < 0) {             //Damit bei der Auflistung das Boss-Leben nicht im Minusbereich angezeigt wird.
                 boss.health = 0
             }
-            println(
-                """
+            if (boss.health > 0) {
+                println(
+                    """
                 ----------BOSS HP----------
                 ${boss.health}
                 ---------------------------
             """.trimIndent()
-            )
-            Thread.sleep(1000)
-            println("----------HEROES HP----------")
-            squad.forEach { hero -> println("${hero.name}: ${hero.health}") }
-            println("-----------------------------")
-            println("Hit ENTER to continue")
-            readln()
+                )
+                Thread.sleep(1000)
+                println("----------HEROES HP----------")
+                squad.forEach { hero -> println("${hero.name}: ${hero.health}") }
+                println("-----------------------------")
+                println("Hit ENTER to continue")
+                readln()
+            }else {
+                if (isBattleOver()){
+                    gameOver()
+                }
+            }
+
         }
     }
 
