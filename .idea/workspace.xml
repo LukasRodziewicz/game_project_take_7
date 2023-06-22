@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9e91620b-b06f-48ce-b147-4133dcc63ba4" name="Changes" comment="small fixes&#10;labeling">
+    <list default="true" id="9e91620b-b06f-48ce-b147-4133dcc63ba4" name="Changes" comment="fixed boss health issue&#10;fixed hero cooldown issue&#10;fixed heal issue">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Game.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Hero.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Hero.kt" afterDir="false" />
     </list>
@@ -94,7 +95,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687470386369</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="fixed boss health issue&#10;fixed hero cooldown issue&#10;fixed heal issue">
+      <created>1687471222065</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1687471222065</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -103,6 +111,7 @@
     <MESSAGE value="introduction added" />
     <MESSAGE value="boss attack updated (heals himself)&#10;tank bugs not fixed - abilities changed" />
     <MESSAGE value="small fixes&#10;labeling" />
-    <option name="LAST_COMMIT_MESSAGE" value="small fixes&#10;labeling" />
+    <MESSAGE value="fixed boss health issue&#10;fixed hero cooldown issue&#10;fixed heal issue" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed boss health issue&#10;fixed hero cooldown issue&#10;fixed heal issue" />
   </component>
 </project>

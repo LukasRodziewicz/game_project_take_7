@@ -172,7 +172,6 @@ class Healer(
 
     //TODO Healer 3rd Ability
     fun healHero(hero: Hero) {
-        if (hero.health < hero.maxHealth)
         if (healingAbility.cooldown == 0) {
             healingAbility.cooldown = 0
             if (hero.health == hero.maxHealth){

@@ -426,6 +426,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                     playerTurn(hero)
                 }
             } else if (hero is Healer) {
+                if (hero.health < hero.maxHealth){
                 if (hero.healingAbility.cooldown == 0) {
                     hero.healingAbility.cooldown = 0
                     hero.healHero(hero)
@@ -436,8 +437,9 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 *************************************************************************
             """.trimIndent()
                     )
+                }
                 } else {
-                    println("This ability can't be used right now (Cooldown: ${hero.healingAbility.cooldown})")
+                    println("This ability can't be used right now because it is on Cooldown (${hero.healingAbility.cooldown}) or ${hero.name} already has full health (${hero.health})\"")
                     playerTurn(hero)
                 }
             }
