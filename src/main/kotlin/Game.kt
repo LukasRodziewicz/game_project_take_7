@@ -2,8 +2,8 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
     var squad: List<Hero> = listOf()       // Variable squad erstellen - ist eine Liste
     val boss = Boss(
         "Majin Buu",
-        1000,
-        1000,
+        600,
+        600,
         Ability("Psy-Kick", 50, 0),
         Ability("Telekinesis", 120, 3),
     )
