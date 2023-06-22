@@ -281,9 +281,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             if (hitChar.health <= 0) {
                 println("${hitChar.name} has been defeated.")
                 //TODO Hero vom squad entfernen
-                println(squad)
                 squad = squad.filterNot { it == hitChar }               //filtert KO char aus liste
-                println(squad)
 
                 //val defeatedHeroes = mutableListOf<Hero>()
                 //defeatedHeroes.add(hitChar)
