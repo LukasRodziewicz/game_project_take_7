@@ -5,9 +5,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         1000,
         1000,
         Ability("Psy-Kick", 40, 0),
-        Ability("Destruction Disc", 50, 0),
-        Ability("Summon", 0, 0), // Sollte eigentlich eine Fähigkeit werden, wo der Boss kleine Bosse beschwört
-        Ability("Telekinesis", 90, 3)
+        Ability("Telekinesis", 50, 0),
     )
 
     open fun startGame() {
@@ -33,55 +31,55 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                       The Special Ability can only be used every 4th turn (Cooldown of 3).
                                        
                                  Hit ENTER to show the characters stats
-                                           
             *****************************************************************************************
         """.trimIndent())
         readln()
         showStats()
     }
+
     private fun showStats(){
         println("""
             -----------------------------------------------------HEROES-------------------------------------------------
             Son Goku (Attacker)
-            HP : 100
+            HP : 200
             Basic : Kaioken - Deals 20 damage
-            Special : KameHameHa - Deals 35 damage (Cooldown: 2)
-            Special 2 : Super KameHameHa - Deals 50 damage (Cooldown: 3)
-            Ultimate (starts on cooldown) : Genki Dama - Deals 100 damage (Cooldown: 5)
+            Special : KameHameHa - Deals 40 damage (Cooldown: 2)
+            Special 2 : Super KameHameHa - Deals 60 damage (Cooldown: 3)
+            Ultimate (starts on cooldown) : Genki Dama - Deals 120 damage (Cooldown: 5)
             
             Vegeta (Attacker)
-            HP : 100
+            HP : 200
             Basic : Tornado Kick - Deals 15 damage
-            Special : Gallick KO - Deals 40 damage (Cooldown: 2)
-            Special 2 : Final Flash - Deals 50 damage (Cooldown: 3)
+            Special : Gallick KO - Deals 45 damage (Cooldown: 2)
+            Special 2 : Final Flash - Deals 65 damage (Cooldown: 3)
             Ultimate (starts on cooldown) : Big Bang - Deals 100 damage (Cooldown: 5)
             
             Trunks (Support)
-            HP : 150
+            HP : 250
             Basic : Cut - Deals 15 damage
             Special : Energy Ball - Deals 25 damage (Cooldown: 2)
-            Special 2 : Rising Sun - Increase damage output of all allies by 70% for 2 turns (Cooldown: 4)
+            Special 2 : Rising Sun - Increase damage output of all allies by 25% permanently (Cooldown: 3)
             Ultimate (starts on cooldown) : Back to the future - Reduce enemy damage by 70% for 2 turns (Cooldown: 4)
             
             Piccolo (Healer)
-            HP : 100
+            HP : 300
             Basic : Headbutt - Deals 10 damage
-            Special : Super Beam Cannon - Deals 80 damage (Cooldown: 4)
+            Special : Super Beam Cannon - Deals 35 damage (Cooldown: 2)
             Special 2 : Regeneration - Heals Piccolo himself by 50 HP (Cooldown: 3)
             Ultimate (starts on cooldown) : Sensu Bean - Heals all allies by 100 HP (Cooldown: 5)
             
             Tien Shinhan (Tank)
-            HP : 100
-            Basic : Kiai - Deals 5 damage
+            HP : 500
+            Basic : Kiai - Deals 10 damage
             Special : Third Eye - Deals 40 damage (Cooldown: 2)
-            Special 2 : Provoke - Deals 50 damage (Cooldown: 3)
+            Special 2 : Chasing Bullet - Deals 50 damage (Cooldown: 3)
             Ultimate (starts on cooldown) : Kiku Canon - Deals 100 damage (Cooldown: 5)
             
             -----------------------------------------------------BOSS---------------------------------------------------
             Majin Buu
-            HP: 1000
+            HP: 600
             Basic : Chasing Bullet - Deals 50 damage to target enemy
-            Special : Telekinesis - Deals 100 damage to all enemies (Cooldown 4)
+            Special : Telekinesis - Heals himself 40 HP and deals 120 damage to all enemies (Cooldown 3)
             ********************************************HIT ENTER TO CONTINUE*******************************************
         """.trimIndent())
         readln()
@@ -135,11 +133,12 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         println(
             """
                 ************************************************************
+                                    Hit ENTER to continue
                 ------------------------------------------------------------
             """.trimIndent()
         )
 
-        Thread.sleep(1500)
+        readln()
         return squad
     }
 
@@ -148,6 +147,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         val flip = coin.random()
         return flip
     }
+
     private fun playGame() {
         println(
             """
@@ -254,6 +254,13 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 ---------------------------------------------------------------------------
             """.trimIndent()
             )
+            if (boss.health < boss.maxHealth){
+                boss.health + 40
+                if (boss.health > boss.maxHealth){
+                    boss.health = boss.maxHealth
+                }
+                println("${boss.name} heals himself (+40)")
+            }
             println("(-${boss.basic.damage * totalDamageModifier})")
             if (totalDamageModifier < 1.0){
                 println("Damage Output has been decreased by a debuff")
@@ -274,9 +281,19 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 //val defeatedHeroes = mutableListOf<Hero>()
                 //defeatedHeroes.add(hitChar)
             }
-            println("Boss-Leben: ${boss.health}")
-            println("Helden-Leben:")
+            println(
+                """
+                ----------BOSS HP----------
+                ${boss.health}
+                ---------------------------
+            """.trimIndent()
+            )
+            Thread.sleep(1000)
+            println("----------HEROES HP----------")
             squad.forEach { hero -> println("${hero.name}: ${hero.health}") }
+            println("-----------------------------")
+            println("Hit ENTER to continue")
+            readln()
         }
     }
 
@@ -304,17 +321,18 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 ---------------------------
             """.trimIndent()
             )
-            Thread.sleep(500)
+            Thread.sleep(1000)
             println("----------HEROES HP----------")
             squad.forEach { hero -> println("${hero.name}: ${hero.health}") }
             println("-----------------------------")
-            Thread.sleep(500)
+            println("Hit ENTER to continue")
+            readln()
         }
     }
 
     //TODO ----------------------------PLAYER INTERACTION DURING TURN----------------------------
     private fun playerTurn(hero: Hero) {
-        println("Bitte wähle eine Aktion für ${hero.name}:")
+        println("Please select an ability of ${hero.name}:")
         println("1. ${hero.basic.name}")
         println("2. ${hero.special.name} (Cooldown: ${hero.special.cooldown})")
         if (hero is Attacker) {
@@ -337,13 +355,6 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         when (selectedAction) {
             1 -> {
                 useBasic(hero)
-                println(
-                    """
-                **************************HERO ATTACK************************************
-                                 ${hero.name} uses ${hero.basic.name}!
-                *************************************************************************
-            """.trimIndent()
-                )
             }
 
             2 -> {
@@ -396,7 +407,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             } else if (hero is Tank) {
                 if (hero.tankAbility.cooldown == 0) {
                     hero.tankAbility.cooldown = 0
-                    hero.tankAbility
+                    hero.tankAbility1(boss)
                     println(
                         """
                 ******************************TAUNT**************************************
@@ -459,7 +470,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             } else if (hero is Tank) {
                 if (hero.ultimate.cooldown == 0) {
                     hero.ultimate.cooldown = 0
-                    hero.shield(heroes)
+                    hero.tankAttack(boss)
                     println(
                         """
                 *****************************SHIELD**************************************
@@ -498,6 +509,13 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
     }
 
     private fun useBasic(hero: Hero) {
+        println(
+            """
+                **************************HERO ATTACK************************************
+                                 ${hero.name} uses ${hero.basic.name}!
+                *************************************************************************
+            """.trimIndent()
+        )
         var totalDamageModifier = 1.0
         hero.effects.forEach { effect ->
             totalDamageModifier *= effect.damageModifier
@@ -514,10 +532,12 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         }
 
     }
+
     private fun useSpecial(hero: Hero) {
         var totalDamageModifier = 1.0
         hero.effects.forEach { effect ->
             totalDamageModifier *= effect.damageModifier
+        }
             if (hero.special.cooldown == 0) {
                 val randomNumber = Math.random()
                 if (randomNumber < 0.5) {
@@ -526,7 +546,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                     boss.health -= critDamage
                 } else {
                     boss.health -= (hero.special.damage * totalDamageModifier).toInt()
-                    println("(-${(hero.special.damage * totalDamageModifier)})")
+                    println("(-${(hero.special.damage * totalDamageModifier).toInt()})")
                 }
                 hero.special.cooldown = 3
             } else {
@@ -534,7 +554,6 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
                 playerTurn(hero)
             }
         }
-    }
 
     private fun reduceCooldowns(hero: Hero) {
         hero.special.reduceCooldown()
@@ -552,49 +571,8 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             hero.ultimate.reduceCooldown()
         }
     }
-
-    private fun stats(heroName: String) {
-        val hero = heroes.find { it.name.equals(heroName, ignoreCase = true) }
-        if (hero != null)
-            println(
-                """
-            ${hero.name}'s stats:
-            Health: ${hero.health}
-            Basic: ${hero.basic.name} Base Dmg: ${hero.basic.damage}
-            Special: ${hero.special.name} Special Dmg: ${hero.special.damage}
-        """.trimIndent()
-            )
-        if (hero is Attacker) {
-            println(
-                """
-                Special 1 : ${hero.specialSecond.name} Damage: ${hero.specialSecond.damage}
-                Ultimate : ${hero.ultimate.name} Damage: ${hero.ultimate.damage}
-            """.trimIndent()
-            )
-        } else if (hero is Support) {
-            println(
-                """
-                Special 1 : ${hero.supportAbility.name} Damage: ${hero.supportAbility.damage}
-                Ultimate : ${hero.ultimate.name} Damage: ${hero.ultimate.damage}
-            """.trimIndent()
-            )
-        } else if (hero is Tank) {
-            println(
-                """
-                Special 1 : ${hero.tankAbility.name} Damage: ${hero.tankAbility.damage}
-                Ultimate : ${hero.ultimate.name} Damage: ${hero.ultimate.damage}
-            """.trimIndent()
-            )
-        } else if (hero is Healer) {
-            println(
-                """
-                Special 1 : ${hero.healingAbility.name} Damage: ${hero.healingAbility.damage}
-                Ultimate : ${hero.ultimateHeal.name} Damage: ${hero.ultimateHeal.damage}
-            """.trimIndent()
-            )
-        } else {
-            println("Hero not found.")
-        }
     }
 
-}
+
+
+
