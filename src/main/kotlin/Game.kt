@@ -73,7 +73,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             Basic : Kiai - Deals 10 damage
             Special : Third Eye - Deals 40 damage (Cooldown: 2)
             Special 2 : Chasing Bullet - Deals 50 damage (Cooldown: 3)
-            Ultimate (starts on cooldown) : Kiku Canon - Deals 100 damage (Cooldown: 5)
+            Ultimate (starts on cooldown) : Kiku Canon - Deals 90 damage (Cooldown: 5)
             
             -----------------------------------------------------BOSS---------------------------------------------------
             Majin Buu
@@ -142,12 +142,14 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         return squad
     }
 
+    //TODO ------------------------------COIN TOSS----------------------------
     private fun headsOrTails(): String{
         val coin = listOf("Heads", "Tails")
         val flip = coin.random()
         return flip
     }
 
+    //TODO ------------------------------MAIN LOOP----------------------------
     private fun playGame() {
         println(
             """
@@ -179,6 +181,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         }
     }
 
+    //TODO ----------------------------TURN LOOP----------------------------
     private fun performTurn() {
         val whoStarts = headsOrTails()
         if (whoStarts == "Heads"){
@@ -199,15 +202,18 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         }
     }
 
+    //TODO ------------------------END GAME CONDITION----------------------------
     private fun isBattleOver(): Boolean {
         return boss.health <= 0 || squad.all { it.health <= 0 }
     }
 
+    //TODO --------------------CHARACTER DOWN CONDITION----------------------------
     private fun isCharDown(hero: Hero): Boolean {
         return hero.health <= 0
     }
 
-    private fun gameOver() {                     //Hier setze ich das Helden Leben auf 0, und nutze die gameOver Funktion in squadTurn
+    //TODO -----------------------SET ALL HEROES HP TO 0----------------------------
+    private fun gameOver() {                     //Hier setze ich das Helden Leben auf 0 und nutze die gameOver Funktion in squadTurn
         squad.forEachIndexed { index, hero ->
             hero.health = 0
         }
@@ -330,7 +336,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         }
     }
 
-    //TODO ----------------------------PLAYER INTERACTION DURING TURN----------------------------
+    //TODO ---------------------PLAYER INTERACTION DURING TURN----------------------------
     private fun playerTurn(hero: Hero) {
         println("Please select an ability of ${hero.name}:")
         println("1. ${hero.basic.name}")
@@ -508,6 +514,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         }
     }
 
+    //TODO -------------------------UNIVERSAL BASIC ABILITY----------------------------
     private fun useBasic(hero: Hero) {
         println(
             """
@@ -533,6 +540,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
 
     }
 
+    //TODO -------------------------UNIVERSAL SPECIAL ABILITY----------------------------
     private fun useSpecial(hero: Hero) {
         var totalDamageModifier = 1.0
         hero.effects.forEach { effect ->
@@ -555,6 +563,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             }
         }
 
+    //TODO ----------------------------COOLDOWN REDUCTION----------------------------
     private fun reduceCooldowns(hero: Hero) {
         hero.special.reduceCooldown()
         if (hero is Attacker) {
