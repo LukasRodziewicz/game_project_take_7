@@ -33,10 +33,9 @@ fun main () {
             Ability("Kiai", 10, 0),
             Ability("Chasing Bullet", 40, 0),
             tankAbility = Ability("Trash Talk", 50, 0),
-            ultimate = Ability("Kaio Kiku Canon", 90, 0)
+            ultimate = Ability("Kaio Kiku Canon", 90, 5)
         )
     )
     Game(heroes).startGame()
-
 }
 

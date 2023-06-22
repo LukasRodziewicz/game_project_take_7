@@ -4,8 +4,8 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         "Majin Buu",
         1000,
         1000,
-        Ability("Psy-Kick", 40, 0),
-        Ability("Telekinesis", 50, 0),
+        Ability("Psy-Kick", 50, 0),
+        Ability("Telekinesis", 120, 3),
     )
 
     open fun startGame() {
@@ -261,7 +261,7 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             """.trimIndent()
             )
             if (boss.health < boss.maxHealth){
-                boss.health + 40
+                boss.health += 40
                 if (boss.health > boss.maxHealth){
                     boss.health = boss.maxHealth
                 }
