@@ -17,7 +17,7 @@ fun main () {
         Support("Trunks",
             1000, 100,
             Ability("Cut", 10, 0),
-            Ability("Energy", 30, 0),
+            Ability("Energy Ball", 30, 0),
             supportAbility = Ability("Rising Sun", 50, 0),
             ultimate = Ability("Back to the future", 60, 0)
         ),

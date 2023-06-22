@@ -6,15 +6,85 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         1000,
         Ability("Psy-Kick", 40, 0),
         Ability("Destruction Disc", 50, 0),
-        Ability("Summon", 0, 0),
+        Ability("Summon", 0, 0), // Sollte eigentlich eine Fähigkeit werden, wo der Boss kleine Bosse beschwört
         Ability("Telekinesis", 90, 3)
     )
 
     open fun startGame() {
+        introduction()
         squad = selectHeroes(heroes)
         playGame()
 
 
+    }
+    private fun introduction(){
+        println("""
+            ***************************************************************************************
+                                        INTRODUCTION
+                                        ------------
+                                        
+                              Welcome to the turn-based battle game.
+                                        
+                          You are given a selection of 5 different Heroes
+                       There are 2 Attackers, 1 Healer, 1 Tank and 1 Support
+                            You can only select 3, so choose wisely.
+                                        
+                The Boss only has a Special (AOE) and a basic Attack but deals a lot of damage.
+                      The Special Ability can only be used every 4th turn (Cooldown of 3).
+                                       
+                                 Hit ENTER to show the characters stats
+                                           
+            *****************************************************************************************
+        """.trimIndent())
+        readln()
+        showStats()
+    }
+    private fun showStats(){
+        println("""
+            -----------------------------------------------------HEROES-------------------------------------------------
+            Son Goku (Attacker)
+            HP : 100
+            Basic : Kaioken - Deals 20 damage
+            Special : KameHameHa - Deals 35 damage (Cooldown: 2)
+            Special 2 : Super KameHameHa - Deals 50 damage (Cooldown: 3)
+            Ultimate (starts on cooldown) : Genki Dama - Deals 100 damage (Cooldown: 5)
+            
+            Vegeta (Attacker)
+            HP : 100
+            Basic : Tornado Kick - Deals 15 damage
+            Special : Gallick KO - Deals 40 damage (Cooldown: 2)
+            Special 2 : Final Flash - Deals 50 damage (Cooldown: 3)
+            Ultimate (starts on cooldown) : Big Bang - Deals 100 damage (Cooldown: 5)
+            
+            Trunks (Support)
+            HP : 150
+            Basic : Cut - Deals 15 damage
+            Special : Energy Ball - Deals 25 damage (Cooldown: 2)
+            Special 2 : Rising Sun - Increase damage output of all allies by 70% for 2 turns (Cooldown: 4)
+            Ultimate (starts on cooldown) : Back to the future - Reduce enemy damage by 70% for 2 turns (Cooldown: 4)
+            
+            Piccolo (Healer)
+            HP : 100
+            Basic : Headbutt - Deals 10 damage
+            Special : Super Beam Cannon - Deals 80 damage (Cooldown: 4)
+            Special 2 : Regeneration - Heals Piccolo himself by 50 HP (Cooldown: 3)
+            Ultimate (starts on cooldown) : Sensu Bean - Heals all allies by 100 HP (Cooldown: 5)
+            
+            Tien Shinhan (Tank)
+            HP : 100
+            Basic : Kiai - Deals 5 damage
+            Special : Third Eye - Deals 40 damage (Cooldown: 2)
+            Special 2 : Provoke - Deals 50 damage (Cooldown: 3)
+            Ultimate (starts on cooldown) : Kiku Canon - Deals 100 damage (Cooldown: 5)
+            
+            -----------------------------------------------------BOSS---------------------------------------------------
+            Majin Buu
+            HP: 1000
+            Basic : Chasing Bullet - Deals 50 damage to target enemy
+            Special : Telekinesis - Deals 100 damage to all enemies (Cooldown 4)
+            ********************************************HIT ENTER TO CONTINUE*******************************************
+        """.trimIndent())
+        readln()
     }
 
     //TODO ----------------------------SELECT HEROES----------------------------
@@ -73,16 +143,25 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
         return squad
     }
 
+    private fun headsOrTails(): String{
+        val coin = listOf("Heads", "Tails")
+        val flip = coin.random()
+        return flip
+    }
     private fun playGame() {
         println(
             """
             ------------------------------------------------------------
                                 Battle begins:
-                      ${boss.name} is making the first turn.
+                               Let's Flip a Coin
+                         Heads: Boss has the first turn
+                         Tails: Heroes have the first turn
             ------------------------------------------------------------
         """.trimIndent()
         )
-        Thread.sleep(1500)
+
+        println("Hit Enter to flip a coin")
+        readln()
         while (!isBattleOver()) {
             performTurn()
         }
@@ -101,10 +180,22 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
     }
 
     private fun performTurn() {
+        val whoStarts = headsOrTails()
+        if (whoStarts == "Heads"){
+            println("Heads! Majin Buu has the first move!")
+
         bossTurn()
         Thread.sleep(1000)
         if (!isBattleOver()) {
             squadTurn()
+        }
+        }else {
+            println("Tails! The Heroes have the first move!")
+            squadTurn()
+            Thread.sleep(1000)
+            if (!isBattleOver()){
+                bossTurn()
+            }
         }
     }
 
@@ -164,9 +255,9 @@ open class Game (val heroes: List<Hero>) {        //Liste aus den chars aus der 
             """.trimIndent()
             )
             println("(-${boss.basic.damage * totalDamageModifier})")
-            //if (totalDamageModifier < 1.0){
-            //    println("Damage Output has been decreased by a debuff")
-            //}
+            if (totalDamageModifier < 1.0){
+                println("Damage Output has been decreased by a debuff")
+            }
             //überprüfen ob tank im spiel ist falls ja
 
             val hitChar = squad.random()                                //Random char
